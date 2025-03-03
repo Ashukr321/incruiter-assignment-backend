@@ -1,77 +1,133 @@
 //  register user
 const registerUser = {
   tags: ["User"],
-  description: "create the user account",
+  description: "Create a new user account with email and password",
   requestBody: {
+    required: true,
     content: {
       "application/json": {
         schema: {
           type: "object",
+          required: ["userName", "email", "password"],
           properties: {
             userName: {
               type: "string",
-              description: "user name",
-              example: "john"
+              description: "User's full name",
+              example: "John Doe",
+              minLength: 2
             },
             email: {
               type: "string",
-              description: "email",
-              example: "john@gmail.com"
+              description: "User's email address",
+              example: "john@gmail.com",
+              format: "email"
             },
             password: {
               type: "string",
-              description: "password",
-              example: "Ashu@321"
+              description: "User's password (min 8 characters, must contain numbers and letters)",
+              example: "Ashu@321",
+              minLength: 8
             },
             role: {
               type: "string",
-              description: "role can be user(default) or admin",
-              example: "admin"
+              description: "User's role (default: user)",
+              example: "admin",
+              enum: ["user", "admin"]
             }
           }
         }
       }
     }
   },
-
   responses: {
-    "200": {
-      description: "ok",
+    "201": {
+      description: "User created successfully",
       content: {
         "application/json": {
           schema: {
             type: "object",
-            example: {
-              success: "true",
-              message: "User created successfully",
-              token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJldfFpbCI6ImpvaG5AZ21haWwuY29tIiwiaWF0IjoxNzM1Nzk2OTM2LCJleHAiOjE3NDM1NzI5MzZ9.7ZyEWupGUu5iHQ_C5ruQdYmHy7Rw-4HL2LxfBfO9YvU"
-
+            properties: {
+              success: {
+                type: "boolean",
+                example: true
+              },
+              message: {
+                type: "string",
+                example: "User created successfully"
+              },
+              token: {
+                type: "string",
+                description: "JWT token for authentication",
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              }
             }
           }
-
+        }
+      }
+    },
+    "400": {
+      description: "Bad Request - Invalid input data",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                example: false
+              },
+              message: {
+                type: "string",
+                example: "Invalid email format"
+              }
+            }
+          }
+        }
+      }
+    },
+    "409": {
+      description: "Conflict - Email already exists",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                example: false
+              },
+              message: {
+                type: "string",
+                example: "Email already registered"
+              }
+            }
+          }
         }
       }
     }
   }
-}
+};
 
 const loginUser = {
   tags: ["User"],
-  description: "login the user",
+  description: "Authenticate user and get JWT token",
   requestBody: {
+    required: true,
     content: {
       "application/json": {
         schema: {
           type: "object",
+          required: ["email", "password"],
           properties: {
             email: {
               type: "string",
-              description: "email",
-              example: "john@gmail.com"
+              description: "User's email address",
+              example: "john@gmail.com",
+              format: "email"
             },
             password: {
               type: "string",
-              description: "password",
+              description: "User's password",
               example: "Ashu@321"
             }
           }
@@ -81,24 +137,100 @@ const loginUser = {
   },
   responses: {
     "200": {
-      description: "ok",
+      description: "Login successful",
       content: {
         "application/json": {
           schema: {
             type: "object",
-            example: {
-              success: "true",
-              message: "User logged in successfully",
-              token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJldfFpbCI6ImpvaG5AZ21haWwuY29tIiwiaWF0IjoxNzM1Nzk2OTM2LCJleHAiOjE3NDM1NzI5MzZ9.7ZyEWupGUu5iHQ_C5ruQdYmHy7Rw-4HL2LxfBfO9YvU"
+            properties: {
+              success: {
+                type: "boolean",
+                example: true
+              },
+              message: {
+                type: "string",
+                example: "Login successful"
+              },
+              token: {
+                type: "string",
+                description: "JWT token for authentication",
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              }
+            }
+          }
+        }
+      }
+    },
+    "401": {
+      description: "Unauthorized - Invalid credentials",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                example: false
+              },
+              message: {
+                type: "string",
+                example: "Invalid email or password"
+              }
             }
           }
         }
       }
     }
   }
-}
+};
 
-
+const logoutUser = {
+  tags: ["User"],
+  description: "Logout user and invalidate JWT token",
+  security: [{ bearerAuth: [] }],
+  responses: {
+    "200": {
+      description: "Logout successful",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                example: true
+              },
+              message: {
+                type: "string",
+                example: "Logged out successfully"
+              }
+            }
+          }
+        }
+      }
+    },
+    "401": {
+      description: "Unauthorized - Invalid or missing token",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              success: {
+                type: "boolean",
+                example: false
+              },
+              message: {
+                type: "string",
+                example: "Please login first"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
 
 const userDocsRoutes = {
   '/user/register': {
@@ -106,6 +238,10 @@ const userDocsRoutes = {
   },
   '/user/login': {
     post: loginUser
+  },
+  '/user/logout': {
+    get: logoutUser
   }
-}
+};
+
 export default userDocsRoutes;

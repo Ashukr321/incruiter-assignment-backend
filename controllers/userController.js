@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
-import { userRegistrationValidation,userLoginValidation } from '../validation/userValidation.js'
+import { userRegistrationValidation, userLoginValidation } from '../validation/userValidation.js'
 
 import envConfig from '../config/envConfig.js'
 
@@ -88,7 +88,7 @@ const login = async (req, res, next) => {
     // generate token 
     const token = jwt.sign({ userId: userExist._id }, envConfig.jwt_secrete, { expiresIn: envConfig.jwt_expire })
     // set the token in the cookie 
-    res.cookie('token', token, { httpOnly: true, secure: envConfig.node_env === 'production'  });
+    res.cookie('token', token, { httpOnly: true, secure: envConfig.node_env === 'production' });
 
     return res.status(200).json({ message: "User logged in successfully", token: token });
   } catch (error) {
@@ -97,6 +97,22 @@ const login = async (req, res, next) => {
 }
 
 // logout
+const logout = async (req, res, next) => {
+  try {
+
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: envConfig.node_env === 'production'
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "User logged out successfully"
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
 
 
-export { register, login }
+export { register, login, logout }

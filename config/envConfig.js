@@ -6,7 +6,8 @@ config();
 const envConfig = {
   port: process.env.PORT,
   mongoUri: process.env.MONGOURI,
-  dbName: process.env.DBNAME
+  dbName: process.env.DBNAME,
+  node_env: process.env.NODE_ENV
 }
 
 export default envConfig;

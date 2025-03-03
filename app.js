@@ -3,6 +3,7 @@ import connectDb from './config/connectDb.js';
 import envConfig from './config/envConfig.js';
 import morgan from 'morgan'
 import fs from 'fs';
+import globalErrorHandler from './middleware/globalErrorHandler.js'
 // security configuration
 import cors from 'cors'
 import helmet from 'helmet'
@@ -47,7 +48,8 @@ app.use(`${baseurl}/user`, userRoutes);
 
 
 
-
+//  globalErrorHandler  
+app.use(globalErrorHandler);
 // listen server 
 const port = envConfig.port || 3000;
 app.listen(port, () => {

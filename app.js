@@ -8,7 +8,9 @@ import globalErrorHandler from './middleware/globalErrorHandler.js'
 import cors from 'cors'
 import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
-
+import swaggerDoc from 'swagger-ui-express';
+import swaggerDocumentation from './helper/swaggerdocumentation.js'
+import cookiesParser from 'cookie-parser'
 // import routes 
 import userRoutes from './routes/userRoutes.js'
 
@@ -33,6 +35,13 @@ app.use(express.json({ limit: "10kb" }));
 // security 
 app.use(helmet())
 app.use(mongoSanitize());
+app.use(cookiesParser());
+
+
+//  swagger docuementaion 
+app.use('/documentation', swaggerDoc.serve);
+app.use('/documentation', swaggerDoc.setup(swaggerDocumentation));
+
 // log file 
 if (envConfig.node_env == "development") {
   const logStream = fs.createWriteStream('./logs/access.log', { flags: 'a' });

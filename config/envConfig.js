@@ -7,7 +7,10 @@ const envConfig = {
   port: process.env.PORT,
   mongoUri: process.env.MONGOURI,
   dbName: process.env.DBNAME,
-  node_env: process.env.NODE_ENV
+  node_env: process.env.NODE_ENV,
+  client_url: process.env.CLIENT_URL,
+  production_url: process.env.PRODUCTION_URL,
+  jwt_secrete: process.env.JWT_SECRETE_KEY
 }
 
 export default envConfig;

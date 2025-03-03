@@ -1,10 +1,10 @@
 import User from "../models/userModel.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
-import { userRegistrationValidation } from '../validation/userValidation.js'
+import { userRegistrationValidation,userLoginValidation } from '../validation/userValidation.js'
 
 import envConfig from '../config/envConfig.js'
-import { retry } from "@reduxjs/toolkit/query";
+
 // register
 const register = async (req, res, next) => {
   try {
@@ -67,7 +67,7 @@ const login = async (req, res, next) => {
       return next(err);
     }
     // check user already exist or not
-    const userExist = await User.findOne({ email: email });
+    const userExist = await User.findOne({ email: reqBody.email });
     if (!userExist) {
       const err = new Error();
       err.status = 401;
@@ -88,7 +88,7 @@ const login = async (req, res, next) => {
     // generate token 
     const token = jwt.sign({ userId: userExist._id }, envConfig.jwt_secrete, { expiresIn: envConfig.jwt_expire })
     // set the token in the cookie 
-    res.cookie('token', token, { httpOnly: true, secure: envConfig.node_env === 'production', maxAge: envConfig.jwt_expire * 24 * 60 * 60 * 1000 });
+    res.cookie('token', token, { httpOnly: true, secure: envConfig.node_env === 'production'  });
 
     return res.status(200).json({ message: "User logged in successfully", token: token });
   } catch (error) {

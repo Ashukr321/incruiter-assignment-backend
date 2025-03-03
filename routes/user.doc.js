@@ -55,9 +55,57 @@ const registerUser = {
   }
 }
 
+const loginUser = {
+  tags: ["User"],
+  description: "login the user",
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            email: {
+              type: "string",
+              description: "email",
+              example: "john@gmail.com"
+            },
+            password: {
+              type: "string",
+              description: "password",
+              example: "Ashu@321"
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    "200": {
+      description: "ok",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            example: {
+              success: "true",
+              message: "User logged in successfully",
+              token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJldfFpbCI6ImpvaG5AZ21haWwuY29tIiwiaWF0IjoxNzM1Nzk2OTM2LCJleHAiOjE3NDM1NzI5MzZ9.7ZyEWupGUu5iHQ_C5ruQdYmHy7Rw-4HL2LxfBfO9YvU"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
 const userDocsRoutes = {
   '/user/register': {
     post: registerUser
+  },
+  '/user/login': {
+    post: loginUser
   }
 }
 export default userDocsRoutes;

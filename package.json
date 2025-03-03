@@ -1,7 +1,7 @@
 {
   "name": "incruiter-assignment-backend",
   "version": "1.0.0",
-  "description": " incruiter-assignment-backend user authentication  ",
+  "description": "incruiter-assignment-backend user authentication  ",
   "main": "app.js",
   "type": "module",
   "scripts": {
@@ -15,6 +15,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-mongo-sanitize": "^2.2.0",
     "helmet": "^8.0.0",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
+    "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/swagger-ui-express": "^4.1.8"

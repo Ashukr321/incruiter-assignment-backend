@@ -3,7 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
 import { userRegistrationValidation } from '../validation/userValidation.js'
 
-
+import envConfig from '../config/envConfig.js'
+import { retry } from "@reduxjs/toolkit/query";
 // register
 const register = async (req, res, next) => {
   try {
@@ -55,8 +56,47 @@ const register = async (req, res, next) => {
 
 
 // login
+const login = async (req, res, next) => {
+  try {
+    const reqBody = req.body;
+    const { error } = userLoginValidation.validate(reqBody);
+    if (error) {
+      const err = new Error();
+      err.status = 401;
+      err.message = error.details[0].message;
+      return next(err);
+    }
+    // check user already exist or not
+    const userExist = await User.findOne({ email: email });
+    if (!userExist) {
+      const err = new Error();
+      err.status = 401;
+      err.message = "User not found";
+      return next(err);
+    }
+    // check password is correct or not 
+    // use bcrypt to validate password 
+    const isPasswordCorrect = await bcrypt.compare(reqBody.password, userExist.password);
+
+    if (!isPasswordCorrect) {
+      const err = new Error();
+      err.status = 401;
+      err.message = "User not found";
+      return next(err);
+    }
+
+    // generate token 
+    const token = jwt.sign({ userId: userExist._id }, envConfig.jwt_secrete, { expiresIn: envConfig.jwt_expire })
+    // set the token in the cookie 
+    res.cookie('token', token, { httpOnly: true, secure: envConfig.node_env === 'production', maxAge: envConfig.jwt_expire * 24 * 60 * 60 * 1000 });
+
+    return res.status(200).json({ message: "User logged in successfully", token: token });
+  } catch (error) {
+    return next(error);
+  }
+}
 
 // logout
 
 
-export { register }
+export { register, login }

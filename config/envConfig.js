@@ -10,7 +10,8 @@ const envConfig = {
   node_env: process.env.NODE_ENV,
   client_url: process.env.CLIENT_URL,
   production_url: process.env.PRODUCTION_URL,
-  jwt_secrete: process.env.JWT_SECRETE_KEY
+  jwt_secrete: process.env.JWT_SECRETE_KEY,
+  jwt_expire: process.env.JWT_EXPIRE
 }
 
 export default envConfig;
